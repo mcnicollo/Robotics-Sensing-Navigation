@@ -15,10 +15,10 @@ for event in log:
 
         print("Message:")
         print("   timestamp   = %s" % str(msg.timestamp))
-        print("   position    = %s" % str(msg.latitude))
-        print("   orientation = %s" % str(msg.longitude))
-        print("   timestamp   = %s" % str(msg.altitude))
-        print("   position    = %s" % str(msg.utm_X))
-        print("   orientation = %s" % str(msg.utm_y))
+        print("   latitude    = %s" % str(msg.latitude))
+        print("   longitude = %s" % str(msg.longitude))
+        print("   altitude   = %s" % str(msg.altitude))
+        print("   utm_x    = %s" % str(msg.utm_X))
+        print("   utm_y = %s" % str(msg.utm_y))
 
         print("")
