@@ -10,12 +10,14 @@ except ImportError:
 import struct
 
 class gps_data(object):
-    __slots__ = ["timestamp", "latitude", "longitude", "altitude", "utm_X", "utm_y"]
+    __slots__ = ["timestamp", "latitude", "lat_bearing", "longitude", "long_bearing", "altitude", "utm_X", "utm_y"]
 
     def __init__(self):
         self.timestamp = 0
         self.latitude = 0.0
+        self.lat_bearing = ""
         self.longitude = 0.0
+        self.long_bearing = ""
         self.altitude = 0.0
         self.utm_X = 0.0
         self.utm_y = 0.0
@@ -27,7 +29,17 @@ class gps_data(object):
         return buf.getvalue()
 
     def _encode_one(self, buf):
-        buf.write(struct.pack(">qddddd", self.timestamp, self.latitude, self.longitude, self.altitude, self.utm_X, self.utm_y))
+        buf.write(struct.pack(">qd", self.timestamp, self.latitude))
+        __lat_bearing_encoded = self.lat_bearing.encode('utf-8')
+        buf.write(struct.pack('>I', len(__lat_bearing_encoded)+1))
+        buf.write(__lat_bearing_encoded)
+        buf.write(b"\0")
+        buf.write(struct.pack(">d", self.longitude))
+        __long_bearing_encoded = self.long_bearing.encode('utf-8')
+        buf.write(struct.pack('>I', len(__long_bearing_encoded)+1))
+        buf.write(__long_bearing_encoded)
+        buf.write(b"\0")
+        buf.write(struct.pack(">ddd", self.altitude, self.utm_X, self.utm_y))
 
     def decode(data):
         if hasattr(data, 'read'):
@@ -41,14 +53,20 @@ class gps_data(object):
 
     def _decode_one(buf):
         self = gps_data()
-        self.timestamp, self.latitude, self.longitude, self.altitude, self.utm_X, self.utm_y = struct.unpack(">qddddd", buf.read(48))
+        self.timestamp, self.latitude = struct.unpack(">qd", buf.read(16))
+        __lat_bearing_len = struct.unpack('>I', buf.read(4))[0]
+        self.lat_bearing = buf.read(__lat_bearing_len)[:-1].decode('utf-8', 'replace')
+        self.longitude = struct.unpack(">d", buf.read(8))[0]
+        __long_bearing_len = struct.unpack('>I', buf.read(4))[0]
+        self.long_bearing = buf.read(__long_bearing_len)[:-1].decode('utf-8', 'replace')
+        self.altitude, self.utm_X, self.utm_y = struct.unpack(">ddd", buf.read(24))
         return self
     _decode_one = staticmethod(_decode_one)
 
     _hash = None
     def _get_hash_recursive(parents):
         if gps_data in parents: return 0
-        tmphash = (0xe9a618fa14113621) & 0xffffffffffffffff
+        tmphash = (0x8d254bc190b2f056) & 0xffffffffffffffff
         tmphash  = (((tmphash<<1)&0xffffffffffffffff)  + (tmphash>>63)) & 0xffffffffffffffff
         return tmphash
     _get_hash_recursive = staticmethod(_get_hash_recursive)

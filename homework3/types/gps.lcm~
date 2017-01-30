@@ -4,7 +4,9 @@ struct gps_data
 {
     int64_t  timestamp;
     double   latitude;
+    string lat_bearing;
     double   longitude;
+    string long_bearing;
     double   altitude;
     double   utm_X;
     double   utm_y;
