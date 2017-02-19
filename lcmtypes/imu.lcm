@@ -1,0 +1,17 @@
+package exlcm;
+
+struct imu_message
+{
+    double  yaw;
+    double  pitch;
+    double  roll; 
+    double  magx;
+    double  magy;
+    double  magz;
+    double  accelx;
+    double  accely;
+    double  accelz;
+    double  gyrox;
+    double  gyroy;
+    double  gyroz;
+}
