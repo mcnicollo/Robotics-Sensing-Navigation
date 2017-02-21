@@ -16,7 +16,7 @@ class IMU(object):
                 self.port = serial.Serial(port_name, 115200, timeout=1.)
                 print 'Connected to:'+ self.port.portstr
 
-                self.lcm = lcm.LCM("udpm://?ttl=12")
+                self.lcm = lcm.LCM("udpm://?ttl=1")
                 self.packet = imu_message()
                 print 'IMU: Initializing IMU'
 		time.sleep(2)

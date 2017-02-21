@@ -18,7 +18,7 @@ class GPS(object):
                         self.port = serial.Serial(port_name, 4800, timeout=1.)  # 4800-N-8
                         print 'Connected to:'+ self.port.portstr
 
-                self.lcm = lcm.LCM("udpm://?ttl=12")
+                self.lcm = lcm.LCM("udpm://?ttl=1")
                 self.packet = gps_message()
                 print 'GPS: Initialization started'
 
