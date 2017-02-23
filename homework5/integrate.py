@@ -69,12 +69,12 @@ yaw = 0.98 * integratedyaw + 0.02*correctedyaw
 wx = correctedyaw * velocity
 
 comparison = yaw - wx
-print(wx)
+#print(wx)
 
 #print(integratedyaw)
 
-#plt.plot(time, data, 'ro')
+plt.plot(magx, magy, 'ro')
 
-#plt.show()
+plt.show()
 
 
