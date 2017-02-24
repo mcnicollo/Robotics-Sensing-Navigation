@@ -159,11 +159,11 @@ gr = fig.add_subplot(111)
 
 
 # Problem 1: compare y acceleration vs gyroz times x velocity
-#gr.plot(time, gzxv, color = "r")
-#gr.plot(time, accy, color = "b")
-#gr.set_title('Y Acc Vs. GyroZ*X Velocity')
-#gr.set_xlabel('Time')
-#gr.set_ylabel('Acceleration')
+gr.plot(time, gzxv, color = "r")
+gr.plot(time, accy, color = "b")
+gr.set_title('Y Acc Vs. GyroZ*X Velocity')
+gr.set_xlabel('Time')
+gr.set_ylabel('Acceleration')
 
 
 # Problem 2: 
@@ -196,8 +196,8 @@ for e,n in zip(edis,ndis):
 	ndis2.append(n)
 
 
-gr.plot(edis2, ndis2, color = "r")
-gr.set_title('IMU Path')
-gr.set_xlabel('Easting')
-gr.set_ylabel('Northing')
+#gr.plot(edis2, ndis2, color = "r")
+#gr.set_title('IMU Path')
+#gr.set_xlabel('Easting')
+#gr.set_ylabel('Northing')
 plt.show()
