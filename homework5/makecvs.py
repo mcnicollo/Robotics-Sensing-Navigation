@@ -16,6 +16,8 @@ gpscount = 0
 
 data = []
 time = []
+magx = []
+magy = []
 
 for event in log:
 #    print(event.channel)
@@ -55,17 +57,19 @@ for event in log:
         #print("   gyrox   = %s" % str(msg.gyrox))
         #print("   gyroy    = %s" % str(msg.gyroy))
         #print("   gyroz = %s" % str(msg.gyroz))
+	magx.append(msg.magx)
+	magy.append(msg.magy)
 	data.append(msg.accelx)
 	time.append(msg.timestamp)
 
 	gpscount = gpscount + 1
 
-with open('xacc.csv', 'wb') as csvfile:
+with open('magx.csv', 'wb') as csvfile:
     writer = csv.writer(csvfile)
-    writer.writerow(data)
-with open('xacctime.csv', 'w') as csvfile:
+    writer.writerow(magx)
+with open('magy.csv', 'w') as csvfile:
     writer = csv.writer(csvfile)
-    writer.writerow(time)
+    writer.writerow(magy)
 
 print("Total imu points: " + str(imucount))
 print("Total gps points: " + str(gpscount))

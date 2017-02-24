@@ -60,6 +60,7 @@ for event in log:
 	gpscount = gpscount + 1
 
 
+oyaw = yaw
 basetime = min(time)
 realtime = []
 for times in time:
@@ -70,15 +71,30 @@ velocity = integrate.cumtrapz(accx, time,initial=0)
 
 nmagy = []
 for num in magy:
-    nmagy.append(num * -1)
+    nmagy.append(num * -1.0)
 
 # get yaw data
 correctedyaw = np.arctan2(nmagy, magx)
+heading = correctedyaw
 integratedyaw = integrate.cumtrapz(gyroz, time, initial = 0)
+
+print("max nmagy: " + str(max(nmagy)))
+print("min nmagy: " + str(min(nmagy)))
+print("max magy: " + str(max(magy)))
+print("mix magy: " + str(min(magy)))
+print("max heading: " + str(max(heading)))
+print("mix heading: " + str(min(heading)))
+
 
 # use low pass filter
 yaw = 0.98 * integratedyaw + 0.02*correctedyaw
 wx = correctedyaw * velocity
+
+# gyro z times x velocity
+xvel = integrate.cumtrapz(accx, time, initial = 0)
+gzxv = (gyroz * xvel)/10000000
+
+
 
 
 #print(integratedyaw)
@@ -100,10 +116,6 @@ for m in magy:
     fi = el * ma
     #fi - math.sqrt(fi)
     mody.append(fi)
-print('modx min: ' + str(min(modx)))
-print('modx max: ' + str(max(modx)))
-print('mody min: ' + str(min(mody)))
-print('mody max: ' + str(max(mody)))
 
 fig = plt.figure()
 gr = fig.add_subplot(111)
@@ -132,10 +144,10 @@ gr = fig.add_subplot(111)
 
 
 #Yaw from IMU
-gr.plot(time, yaw, color = "r")
-gr.set_title('IMU Yaw')
-gr.set_xlabel('Time')
-gr.set_ylabel('Yaw')
+#gr.plot(time, yaw, color = "r")
+#gr.set_title('IMU Yaw')
+#gr.set_xlabel('Time')
+#gr.set_ylabel('Yaw')
 
 
 #Yaw from IMU VS Calculated
@@ -146,7 +158,46 @@ gr.set_ylabel('Yaw')
 #gr.set_ylabel('Yaw')
 
 
+# Problem 1: compare y acceleration vs gyroz times x velocity
+#gr.plot(time, gzxv, color = "r")
+#gr.plot(time, accy, color = "b")
+#gr.set_title('Y Acc Vs. GyroZ*X Velocity')
+#gr.set_xlabel('Time')
+#gr.set_ylabel('Acceleration')
 
 
+# Problem 2: 
+ev = []
+nv = []
+xvel = integrate.cumtrapz(accx, time, initial = 0)
 
+noyaw = []
+for v in oyaw:
+	noyaw.append(-1*v)
+
+for v,head in zip(xvel,noyaw):
+	ev.append(v*math.cos(math.radians(head)))
+	nv.append(v*math.sin(math.radians(head)))
+xcoord = []
+ycoord = []
+x = 0
+y = 0
+
+edis = integrate.cumtrapz(ev, time, initial = 0)
+ndis = integrate.cumtrapz(nv, time, initial = 0)
+
+edis2 = []
+ndis2 = []
+for e,n in zip(edis,ndis):
+	e = (e*math.cos(-.5104))-(n*math.sin(-.5104))
+	n = (n*math.cos(-.5104))+(e*math.sin(-.5104))
+	e = e/(.0786/.0415)
+	edis2.append(e)
+	ndis2.append(n)
+
+
+gr.plot(edis2, ndis2, color = "r")
+gr.set_title('IMU Path')
+gr.set_xlabel('Easting')
+gr.set_ylabel('Northing')
 plt.show()
